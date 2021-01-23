@@ -6,10 +6,10 @@ from datetime import datetime, timedelta
 from traceback import format_exc
 
 dir = os.path.dirname(__file__)
-sys.path.insert(0, os.path.join(dir, '../save'))
+sys.path.insert(0, os.path.join(dir, './save'))
 
 import pandas_csv
-import to_es
+# import to_es
 
 base_url = "http://news.naver.com/#"
 
@@ -57,7 +57,7 @@ class NewsCrawling:
                            "colect_time": colect_time}
 
             pandas_csv.to_csv(insert_data)
-            to_es.to_elastic(insert_data)
+            # to_es.to_elastic(insert_data)
 
 
 collecting(base_url)
