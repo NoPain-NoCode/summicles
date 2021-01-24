@@ -11,20 +11,10 @@ BOT_NAME = 'news_crawl'
 
 SPIDER_MODULES = ['news_crawl.spiders']
 NEWSPIDER_MODULE = 'news_crawl.spiders'
+LOG_LEVEL = 'ERROR'
 
 # Obey robots.txt rules
 ROBOTSTXT_OBEY = False
-
-# 다운로드 간격
-DOWNLOAD_DELAY = 2
-
-# 쿠키 사용
-COOKIES_ENABLED = True
-
-# Referer 삽입
-DEFAULT_REQUEST_HEADERS = {
-    'Referer': 'https://news.daum.net/',
-}
 
 # User-Agent 미들웨어 사용
 DOWNLOADER_MIDDLEWARES = {
@@ -44,22 +34,12 @@ FAKEUSERAGENT_PROVIDERS = [
 ]
 USER_AGENT = 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/87.0.4280.141 Safari/537.36'
 
-# 파이프 라인 활성화
-# 숫자가 작을 수록 우선순위 상위
-# ITEM_PIPELINES = {
-#     'news_crawl.pipelines.NewsSpiderPipeline': 300,
-# }
-FEED_FORMAT = "csv"
-FEED_URI = "news.csv"
 
-# 재시도 횟수
-RETRY_ENABLED = True
-RETRY_TIMES = 2
+ITEM_PIPELINES = {'newscrawling.pipelines.CsvPipeline': 300, }
 
-# 출력인코딩
-FEED_EXPORT_ENCODING = 'utf-8'
 
-# 캐시사용
+# Enable and configure HTTP caching (disabled by default)
+# See https://docs.scrapy.org/en/latest/topics/downloader-middleware.html#httpcache-middleware-settings
 #HTTPCACHE_ENABLED = True
 #HTTPCACHE_EXPIRATION_SECS = 0
 #HTTPCACHE_DIR = 'httpcache'

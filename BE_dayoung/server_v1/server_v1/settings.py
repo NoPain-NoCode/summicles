@@ -77,10 +77,10 @@ WSGI_APPLICATION = 'server_v1.wsgi.application'
 # Database
 # https://docs.djangoproject.com/en/3.1/ref/settings/#databases
 
-DATABASES = {
+DATABASES = DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.mysql',
-        'NAME': 'articles',
+        'NAME': 'news_test',
         'USER': 'root',
         'PASSWORD': 'Al8730956!',
         'HOST': '127.0.0.1',
