@@ -19,19 +19,21 @@ conn = pymysql.connect(host='localhost', user='root', password='root', db='mysql
 cur = conn.cursor()
 
 def withImg (link, category, title, article_date, img, contents, crawl_time, newspaper) :
-    cur.execute('insert into article(link, category, title, article_date, img, contents, crawl_time, newspaper) values ("%s", "%s", "%s", "%s", "%s", "%s", "%s", "%s")', (link, '정치', title, article_date, img, contents, crawl_time, newspaper))
-    cur.connection.commit()
+    cur.execute('insert into article(link, category, title, article_date, img, contents, crawl_time, newspaper) values (%s, %s, %s, %s, %s, %s, %s, %s)', (link, '정치', title, article_date, img, contents, crawl_time, newspaper))
 
 def withoutImg (link, category, title, article_date, contents, crawl_time, newspaper) :
-    cur.execute('insert into article(link, category, title, article_date, contents, crawl_time, newspaper) values ("%s", "%s", "%s", "%s", "%s", "%s", "%s")', (link, '정치', title, article_date, contents, crawl_time, newspaper))
-    cur.connection.commit()
+    cur.execute('insert into article(link, category, title, article_date, contents, crawl_time, newspaper) values (%s, %s, %s, %s, %s, %s, %s)', (link, '정치', title, article_date, contents, crawl_time, newspaper))
 
 try:
     # article table에 연결
     cur.execute("use summicles")
 
     now = datetime.datetime.now()
-    crawl_time = now.strftime('%Y. %m. %d %H:%M')
+    crawl_time = now.strftime('%Y. %m. %d. %H:%M')
+
+    # 새로운 크롤링 결과를 저장하기 전에 기존의 정보 삭제
+    cur.execute("delete from article where category='정치'")
+    conn.commit()
 
     chrome_options = Options()
     chrome_options.add_argument("--headless") # 실행 했을 때 브라우저가 실행되지 않는다.
@@ -121,6 +123,9 @@ try:
 
     # 브라우저 종료
     browser.close()
+
+    # DB에 변경사항 저장
+    conn.commit()
 
 # db 커서, 연결 해제
 finally:
