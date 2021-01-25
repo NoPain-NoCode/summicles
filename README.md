@@ -24,3 +24,9 @@
 |Framework|Django|백엔드 개발|
 |DB|MySQL| |
 |개발언어|python3.7|백엔드 개발, 크롤링, 기사 요약 학습|
+### Media(Grid)Options
+|종류|디바이스|단위(px)|
+|---|---|------|
+|Large Devices|Desktops|1024px이상|
+|Medium Devices|Tablets|1024px이하|
+|Small Devices|Tablets + Phones|768px이하|
