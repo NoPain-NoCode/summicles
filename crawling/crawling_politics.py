@@ -76,16 +76,21 @@ try:
         print('****** {}th New ******'.format(nth_new))
 
         # 필요 정보 추출(news_comp, title, date, img, contents, link)
-        newspaper = soup.select('div.head_view > em > a >img')[0]['alt']
-        title = soup.select('div.head_view > h3')[0].text.strip()
-        article_date = soup.select('div.head_view > span.info_view > span:nth-child(2) > span.num_date')[0].text.strip()
-        # 이미지가 없는 기사일 경우 오류처리
+        # 도중에 문제가 있다면 크롤링 하지 않고 넘어감.
         try:
-            img = soup.select('figure.figure_frm.origin_fig > p.link_figure > img')[0]['data-org-src']
+            newspaper = soup.select('div.head_view > em > a >img')[0]['alt']
+            title = soup.select('div.head_view > h3')[0].text.strip()
+            article_date = soup.select('div.head_view > span.info_view > span:nth-child(2) > span.num_date')[0].text.strip()
+            contents_lists = soup.select('div#harmonyContainer > section > p[dmcf-ptype="general"]')
+            link = soup.select('div.copyUrl > div.sns_copyurl > a.link_copyurl > span:nth-child(2)')[0].text.strip()
+            # 이미지가 없는 기사일 경우 오류처리
+            try:
+                img = soup.select('figure.figure_frm.origin_fig > p.link_figure > img')[0]['data-org-src']
+            except IndexError as e:
+                img = 0
         except IndexError as e:
-            img = 0
-        contents_lists = soup.select('div#harmonyContainer > section > p[dmcf-ptype="general"]')
-        link = soup.select('div.copyUrl > div.sns_copyurl > a.link_copyurl > span:nth-child(2)')[0].text.strip()
+            nth_new += 1
+            continue
 
         print(newspaper)
         print(title)
