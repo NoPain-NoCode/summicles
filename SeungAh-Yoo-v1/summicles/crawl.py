@@ -29,8 +29,7 @@ def crawl_data():
     chrome_options.add_argument("--headless")  # 실행 했을 때 브라우저가 실행되지 않는다.
 
     # webdriver 설정(Chrome, Firefox 등) - Headless 모드
-    browser = webdriver.Chrome(
-        'D:/webdriver/chrome/chromedriver.exe', options=chrome_options)
+    browser = webdriver.Chrome('D:/webdriver/chrome/chromedriver.exe', options=chrome_options)
 
     # webdriver 설정(Chrome, Firefox 등) - 일반 모드
     # browser = webdriver.Chrome('D:/webdriver/chrome/chromedriver.exe')
@@ -42,21 +41,21 @@ def crawl_data():
     browser.set_window_size(1920, 1280)  # maximize_window(), minimize_window()
 
     # 페이지 이동
-    browser.get('https://news.daum.net/culture#1')
+    browser.get('https://news.daum.net/ranking/popular')
 
     # 1차 페이지 내용
     # print('Before Page Contents : {}'.format(browser.page_source))
 
     # 현재 페이지의 기사 순서
-    nth_new = 1
+    nth_news = 1
 
     # 한 페이지에서 크롤링할 기사 수
-    target_crawl_news_num = 20
+    target_crawl_news_num = 50
 
-    while nth_new <= target_crawl_news_num:
+    while nth_news <= target_crawl_news_num:
         # 페이지 이동 클릭
-        WebDriverWait(browser, 3).until(EC.presence_of_element_located(
-            (By.CSS_SELECTOR, 'ul.list_timenews > li:nth-child({}) > strong > a'.format(nth_new)))).click()
+        WebDriverWait(browser, 4).until(EC.presence_of_element_located(
+            (By.CSS_SELECTOR, '#mArticle > div.rank_news > ul.list_news2 > li:nth-child({}) > div.cont_thumb > strong > a'.format(nth_news)))).click()
 
         # bs4 초기화
         soup = BeautifulSoup(browser.page_source, 'html.parser')
@@ -65,11 +64,12 @@ def crawl_data():
         # print(soup.prettify)
 
         # 페이지 번호 출력
-        print('****** {}th New ******'.format(nth_new))
+        print('****** {}th New ******'.format(nth_news))
 
         # 필요 정보 추출(news_comp, title, date, img, contents, link)
         # 도중에 문제가 있다면 크롤링 하지 않고 넘어감.
         try:
+            category = soup.select('div#kakaoContent > h2')[0].text.strip()
             newspaper = soup.select('div.head_view > em > a >img')[0]['alt']
             title = soup.select('div.head_view > h3')[0].text.strip()
             article_date = soup.select(
@@ -85,10 +85,11 @@ def crawl_data():
             except IndexError as e:
                 img = 0
         except IndexError as e:
-            nth_new += 1
+            nth_news += 1
             del soup
             continue
 
+        print(category)
         print(newspaper)
         print(title)
         print(article_date)
@@ -105,7 +106,7 @@ def crawl_data():
         if img:
             item_obj = {
                 'link': link,
-                'category': '문화',
+                'category': category,
                 'title': title,
                 'article_date': article_date,
                 'img': img,
@@ -116,7 +117,7 @@ def crawl_data():
         else:
             item_obj = {
                 'link': link,
-                'category': '문화',
+                'category': category,
                 'title': title,
                 'article_date': article_date,
                 'img': None,
@@ -129,9 +130,9 @@ def crawl_data():
 
         # 페이지 뒤로 가기
         browser.back()
-        time.sleep(3)
+        time.sleep(4)
 
-        nth_new += 1
+        nth_news += 1
 
         print()
         print()
@@ -165,7 +166,7 @@ def add_new_itmes(crawled_items):
     for item in items_to_insert_into_db:
         Article(
             link=item['link'],
-            category='문화',
+            category=item['category'],
             title=item['title'],
             article_date=item['article_date'],
             img=item['img'],
