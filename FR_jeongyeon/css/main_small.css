@@ -1,0 +1,98 @@
+/* 모바일 사이즈 */
+/* INNER */
+.section .inner {
+  max-width: 330px;
+  margin: 0 auto;
+}
+
+/* HEADER */
+header {
+}
+header .wrap-logo {
+  display: block;
+  text-align: center;
+}
+header .wrap-logo .logo {
+  font-size: 11px;
+  margin-bottom: 5px;
+  font-weight: 500;
+}
+
+header .search-group {
+}
+header .search-group input {
+  width: 300px;
+}
+header .menu-group .swiper-container {
+  max-width: 330px;
+  height: 25px;
+  margin-top: 10px;
+}
+#topic-menu {
+}
+#topic-menu li.swiper-slide {
+  text-align: center;
+  font-size: 12px;
+  padding: 0;
+}
+
+/* VISUAL */
+.section--visual .inner {
+  padding: 50px 0;
+}
+.section--visual .intro-page {
+  margin: 0;
+}
+.section--visual .intro-title {
+  font-size: 35px;
+}
+.section--visual .intro-description {
+  font-size: 14px;
+  margin: 10px 0 0 0;
+}
+
+/* FEATURE */
+.section--feature {
+}
+.section--feature li {
+  width: 100%;
+}
+.section--feature li .title {
+  font-size: 16px;
+}
+.section--feature li .summary {
+  font-size: 13px;
+}
+.section--feature li .subject-tag {
+  font-size: 12px;
+}
+
+/* FOOTER */
+.section--footer {
+}
+.section--footer .wrap-footer {
+  font-size: 9px;
+  display: block;
+}
+
+.section--footer .wrap-left-footer {
+  justify-content: center;
+  text-align: center;
+}
+.section--footer .wrap-center-footer {
+  margin-top: 10px;
+}
+.section--footer .wrap-center-footer .gitlogo {
+  width: 32px;
+  margin: 0 auto;
+}
+.section--footer .wrap-right-footer {
+  margin-top: 10px;
+  justify-content: center;
+}
+
+/* 팝업 기사 */
+.popup .modal-content {
+  max-width: 350px;
+  font-size: 13px;
+}
