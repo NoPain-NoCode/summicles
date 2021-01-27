@@ -1,6 +1,7 @@
 from django.shortcuts import render
 from rest_framework import generics
 from rest_framework import mixins
+from rest_framework.filters import SearchFilter
 from .models import Article
 from .serializers import ArticleSerializer
 
@@ -8,7 +9,10 @@ from .serializers import ArticleSerializer
 
 
 class MainAPI(generics.GenericAPIView, mixins.ListModelMixin):
+    queryset = Article.objects.all()
     serializer_class = ArticleSerializer
+    filter_backends = [SearchFilter]
+    search_fields = ['category', 'title', 'article_date', 'contents', 'newspaper']
 
     def get_queryset(self):  # 어떤 데이터를 가져올 것인지 명시
         return Article.objects.all().order_by('article_date')
@@ -18,7 +22,10 @@ class MainAPI(generics.GenericAPIView, mixins.ListModelMixin):
 
 
 class PoliticsAPI(generics.GenericAPIView, mixins.ListModelMixin):
+    queryset = Article.objects.all()
     serializer_class = ArticleSerializer
+    filter_backends = [SearchFilter]
+    search_fields = ['category', 'title', 'article_date', 'contents', 'newspaper']
 
     def get_queryset(self):  # 어떤 데이터를 가져올 것인지 명시
         return Article.objects.filter(category='정치').order_by('article_date')
