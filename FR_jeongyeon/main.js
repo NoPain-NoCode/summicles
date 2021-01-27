@@ -5,8 +5,8 @@
     const hide = "hide";
 
     const openPopuptitle = document.querySelector('.title');
-    const btnClose1 = document.querySelector(".btn-close");
-    const btnClose2 = document.querySelector(".btn-close");
+    const btnClose1 = document.querySelector(".btn-close1");
+    const btnClose2 = document.querySelector(".btn-close2");
 
     openPopuptitle.addEventListener('click', ()=>{
         onElements();
