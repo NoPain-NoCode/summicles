@@ -16,6 +16,8 @@ class Article(models.Model):
     class Meta:
         managed = False
         db_table = 'article'
+        verbose_name = '기사 정보'
+        verbose_name_plural = '기사 정보'
 
     def __str__(self):
         return self.title
