@@ -25,7 +25,7 @@ class PoliticsAPI(generics.GenericAPIView, mixins.ListModelMixin):
     queryset = Article.objects.all()
     serializer_class = ArticleSerializer
     filter_backends = [SearchFilter]
-    search_fields = ['category', 'title', 'article_date', 'contents', 'newspaper']
+    search_fields = ['category', 'title', 'contents', 'newspaper']
 
     def get_queryset(self):  # 어떤 데이터를 가져올 것인지 명시
         return Article.objects.filter(category='정치').order_by('article_date')
