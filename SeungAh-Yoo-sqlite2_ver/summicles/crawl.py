@@ -63,6 +63,8 @@ def crawl_data():
     target_crawl_news_num = 50
 
     while nth_news <= target_crawl_news_num:
+        # 페이지 번호 출력
+        print('****** {}th New ******'.format(nth_news))
         # 페이지 이동 클릭
         try:
             btn = browser.find_element_by_css_selector('#mArticle > div.rank_news > ul.list_news2 > li:nth-child({}) > div.cont_thumb > strong > a'.format(nth_news))
@@ -76,9 +78,6 @@ def crawl_data():
 
         # 소스코드 정리
         # print(soup.prettify)
-
-        # 페이지 번호 출력
-        print('****** {}th New ******'.format(nth_news))
 
         # 필요 정보 추출(news_comp, title, date, img, contents, link)
         # 도중에 문제가 있다면 크롤링 하지 않고 넘어감.
@@ -98,7 +97,7 @@ def crawl_data():
                     0]['data-org-src']
             except IndexError as e:
                 img = 0
-        except IndexError as e:
+        except IndexError:
             nth_news += 1
             del soup
             continue
