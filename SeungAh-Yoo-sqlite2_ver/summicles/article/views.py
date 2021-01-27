@@ -75,7 +75,7 @@ class DigitalAPI(generics.GenericAPIView, mixins.ListModelMixin):
     serializer_class = ArticleSerializer
 
     def get_queryset(self):  # 어떤 데이터를 가져올 것인지 명시
-        return Article.objects.filter(category='IT/과학', category='IT', category='과학').order_by('article_date')
+        return Article.objects.filter(Q(category='IT/과학') | Q(category='IT') | Q(category='과학')).order_by('article_date')
 
     def get(self, request, *args, **kwargs):
         return self.list(request, *args, **kwargs)

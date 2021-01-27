@@ -19,11 +19,11 @@ from article.views import MainAPI, PoliticsAPI, EconomicAPI, SocietyAPI, Culture
 
 urlpatterns = [
     path('admin/', admin.site.urls),
-    path('main/', MainAPI.as_view()),
-    path('politics/', PoliticsAPI.as_view()),
-    path('economic/', EconomicAPI.as_view()),
-    path('society/', SocietyAPI.as_view()),
-    path('culture/', CultureAPI.as_view()),
-    path('foreign/', ForeignAPI.as_view()),
-    path('digital/', DigitalAPI.as_view()),
+    path('summicles/main/', MainAPI.as_view()),
+    path('summicles/politics/', PoliticsAPI.as_view()),
+    path('summicles/economic/', EconomicAPI.as_view()),
+    path('summicles/society/', SocietyAPI.as_view()),
+    path('summicles/culture/', CultureAPI.as_view()),
+    path('summicles/foreign/', ForeignAPI.as_view()),
+    path('summicles/digital/', DigitalAPI.as_view()),
 ]
