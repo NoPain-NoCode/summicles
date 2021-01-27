@@ -1,3 +1,5 @@
+import os
+
 # mysql 연동
 
 DATABASES = {
@@ -11,3 +13,4 @@ DATABASES = {
     }
 }
 SECRET_KEY = 'mndfvk+g^j&guat%g4(6%su5sqqeiizxv7@o!_&v1m=-5#5snl'
+# SECRET_KEY = os.environ.get('DJANGO_SECRET_KEY', 'mndfvk+g^j&guat%g4(6%su5sqqeiizxv7@o!_&v1m=-5#5snl')
