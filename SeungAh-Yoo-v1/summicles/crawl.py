@@ -18,8 +18,16 @@ django.setup()
 # django.setup() 이후 import해 주어야 한다.
 from article.models import Article
 
+# DB에 있는 모든 내용 삭제
+def delete_all():
+    queryset = Article.objects.all()
+    queryset.delete()
+
 
 def crawl_data():
+    # 새로운 기사를 저장하기 전에 기존의 데이터를 모두 삭제
+    delete_all()
+    
     result = []
 
     now = datetime.datetime.now()
