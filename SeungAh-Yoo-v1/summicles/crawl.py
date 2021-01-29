@@ -78,7 +78,7 @@ def crawl_data():
         # print(soup.prettify)
 
         # 페이지 번호 출력
-        print('****** {}th New ******'.format(nth_news))
+        # print('****** {}th New ******'.format(nth_news))
 
         # 필요 정보 추출(news_comp, title, date, img, contents, link)
         # 도중에 문제가 있다면 크롤링 하지 않고 넘어감.
@@ -103,19 +103,19 @@ def crawl_data():
             del soup
             continue
 
-        print(category)
-        print(newspaper)
-        print(title)
-        print(article_date)
-        if img:
-            print(soup.select('figure.figure_frm.origin_fig > p.link_figure > img')[0]['data-org-src'])
-        print(link)
+        # print(category)
+        # print(newspaper)
+        # print(title)
+        # print(article_date)
+        # if img:
+        #     print(soup.select('figure.figure_frm.origin_fig > p.link_figure > img')[0]['data-org-src'])
+        # print(link)
 
         # 여러 문장으로 나눠서 온 content들을 하나의 문장으로 합친다.
         contents = ''
         for content in contents_lists:
             contents += content.text.strip()
-        print(contents)
+        # print(contents)
 
         if img:
             item_obj = {
@@ -148,8 +148,8 @@ def crawl_data():
 
         nth_news += 1
 
-        print()
-        print()
+        # print()
+        # print()
 
         # 페이지 별 스크린 샷 저장
         # browser.save_screenshot('./target_page{}.png'.format(cur_page))
@@ -188,7 +188,7 @@ def add_new_itmes(crawled_items):
             crawl_time=item['crawl_time'],
             newspaper=item['newspaper']
         ).save()
-        print("new item added!")
+        # print("new item added!")
 
     return items_to_insert_into_db
 
