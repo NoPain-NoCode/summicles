@@ -187,7 +187,7 @@ def add_new_itmes(crawled_items):
             crawl_time=item['crawl_time'],
             newspaper=item['newspaper']
         ).save()
-        print("new item added!")
+        # print("new item added!")
 
     return items_to_insert_into_db
 
