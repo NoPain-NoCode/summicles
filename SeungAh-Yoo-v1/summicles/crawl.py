@@ -27,8 +27,6 @@ def delete_all():
 
 
 def crawl_data():
-    # 새로운 기사를 저장하기 전에 기존의 데이터를 모두 삭제
-    delete_all()
     
     result = []
 
@@ -39,10 +37,10 @@ def crawl_data():
     chrome_options.add_argument("--headless")  # 실행 했을 때 브라우저가 실행되지 않는다.
 
     # webdriver 설정(Chrome, Firefox 등) - Headless 모드
-    browser = webdriver.Chrome('D:/webdriver/chrome/chromedriver.exe', options=chrome_options)
+    # browser = webdriver.Chrome('D:/webdriver/chrome/chromedriver.exe', options=chrome_options)
 
     # webdriver 설정(Chrome, Firefox 등) - 일반 모드
-    # browser = webdriver.Chrome('D:/webdriver/chrome/chromedriver.exe')
+    browser = webdriver.Chrome('D:/webdriver/chrome/chromedriver.exe')
 
     # 크롬 브라우저 내부 대기
     browser.implicitly_wait(5)
@@ -65,6 +63,7 @@ def crawl_data():
     while nth_news <= target_crawl_news_num:
         # 페이지 이동 클릭
         try:
+            browser.implicitly_wait(10)
             btn = browser.find_element_by_css_selector('#mArticle > div.rank_news > ul.list_news2 > li:nth-child({}) > div.cont_thumb > strong > a'.format(nth_news))
             browser.execute_script('arguments[0].click();', btn)
         except TimeoutException:
@@ -77,45 +76,44 @@ def crawl_data():
         # 소스코드 정리
         # print(soup.prettify)
 
-        # 페이지 번호 출력
-        # print('****** {}th New ******'.format(nth_news))
-
         # 필요 정보 추출(news_comp, title, date, img, contents, link)
         # 도중에 문제가 있다면 크롤링 하지 않고 넘어감.
         try:
+            # 페이지 번호 출력
+            print('****** {}th New ******'.format(nth_news))
+            browser.implicitly_wait(10)
             category = soup.select('div#kakaoContent > h2')[0].text.strip()
+            print(category)
             newspaper = soup.select('div.head_view > em > a >img')[0]['alt']
+            print(newspaper)
             title = soup.select('div.head_view > h3')[0].text.strip()
+            print(title)
             article_date = soup.select(
-                'div.head_view > span.info_view > span:nth-child(2) > span.num_date')[0].text.strip()
+                'div.head_view > span.info_view > span.txt_info > span.num_date')[0].text.strip()
+            print(article_date)
             contents_lists = soup.select(
-                'div#harmonyContainer > section > p[dmcf-ptype="general"]')
+                'div#harmonyContainer > section > [dmcf-ptype="general"]')
+                    # 여러 문장으로 나눠서 온 content들을 하나의 문장으로 합친다.
+            contents = ''
+            for content in contents_lists:
+                contents += content.text.strip()
+            print(contents)
             link = soup.select(
                 'div.copyUrl > div.sns_copyurl > a.link_copyurl > span:nth-child(2)')[0].text.strip()
+            print(link)
             # 이미지가 없는 기사일 경우 오류처리
             try:
                 img = soup.select('figure.figure_frm.origin_fig > p.link_figure > img')[
                     0]['data-org-src']
             except IndexError as e:
                 img = 0
+            if img:
+                print(soup.select('figure.figure_frm.origin_fig > p.link_figure > img')[0]['data-org-src'])
         except IndexError as e:
             nth_news += 1
             del soup
             continue
 
-        # print(category)
-        # print(newspaper)
-        # print(title)
-        # print(article_date)
-        # if img:
-        #     print(soup.select('figure.figure_frm.origin_fig > p.link_figure > img')[0]['data-org-src'])
-        # print(link)
-
-        # 여러 문장으로 나눠서 온 content들을 하나의 문장으로 합친다.
-        contents = ''
-        for content in contents_lists:
-            contents += content.text.strip()
-        # print(contents)
 
         if img:
             item_obj = {
@@ -148,8 +146,8 @@ def crawl_data():
 
         nth_news += 1
 
-        # print()
-        # print()
+        print()
+        print()
 
         # 페이지 별 스크린 샷 저장
         # browser.save_screenshot('./target_page{}.png'.format(cur_page))
@@ -166,6 +164,9 @@ def crawl_data():
 
 
 def add_new_itmes(crawled_items):
+    # 새로운 기사를 저장하기 전에 기존의 데이터를 모두 삭제
+    delete_all()
+
     last_inserted_items = Article.objects.last()
     if last_inserted_items is None:
         last_inserted_link = ""
