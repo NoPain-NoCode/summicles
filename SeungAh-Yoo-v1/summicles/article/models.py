@@ -4,14 +4,15 @@ from django.db import models
 
 
 class Article(models.Model):
-    link = models.CharField(primary_key=True, max_length=300)
+    link = models.CharField(primary_key=True, max_length=255)
     category = models.CharField(max_length=64)
-    title = models.CharField(max_length=300)
+    title = models.CharField(max_length=255)
     article_date = models.CharField(max_length=128, blank=True, null=True)
-    img = models.CharField(max_length=256, blank=True, null=True)
+    img = models.CharField(max_length=255, blank=True, null=True)
     contents = models.TextField()
     crawl_time = models.CharField(max_length=128, blank=True, null=True)
     newspaper = models.CharField(max_length=64, blank=True, null=True)
+    headline = models.CharField(max_length=255, blank=True, null=True)
 
     class Meta:
         managed = False
