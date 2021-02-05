@@ -27,8 +27,6 @@ def delete_all():
 
 
 def crawl_data():
-    # 새로운 기사를 저장하기 전에 기존의 데이터를 모두 삭제
-    delete_all()
     
     result = []
 
@@ -63,8 +61,24 @@ def crawl_data():
     target_crawl_news_num = 50
 
     while nth_news <= target_crawl_news_num:
-        # 페이지 번호 출력
-        print('****** {}th New ******'.format(nth_news))
+        # 초기화
+        link = None,
+        category = None,
+        title = None,
+        article_date = None,
+        img = None,
+        contents = None,
+        crawl_time = None,
+        newspaper = None,
+        headline = None
+
+        browser.implicitly_wait(10)
+
+        # headline 저장
+        soup = BeautifulSoup(browser.page_source, 'html.parser')
+        headline = soup.select('#mArticle > div.rank_news > ul.list_news2 > li:nth-child({}) > div.cont_thumb > div > span'.format(nth_news))[0].text.strip()
+        del soup
+
         # 페이지 이동 클릭
         try:
             btn = browser.find_element_by_css_selector('#mArticle > div.rank_news > ul.list_news2 > li:nth-child({}) > div.cont_thumb > strong > a'.format(nth_news))
@@ -82,62 +96,60 @@ def crawl_data():
         # 필요 정보 추출(news_comp, title, date, img, contents, link)
         # 도중에 문제가 있다면 크롤링 하지 않고 넘어감.
         try:
+            # 페이지 번호 출력
+            print('****** {}th New ******'.format(nth_news))
+            print(headline)
+            browser.implicitly_wait(10)
+            # category
             category = soup.select('div#kakaoContent > h2')[0].text.strip()
+            print(category)
+            # newspaper
             newspaper = soup.select('div.head_view > em > a >img')[0]['alt']
+            print(newspaper)
+            # title
             title = soup.select('div.head_view > h3')[0].text.strip()
+            print(title)
+            # article_date
             article_date = soup.select(
-                'div.head_view > span.info_view > span:nth-child(2) > span.num_date')[0].text.strip()
+                'div.head_view > span.info_view > span.txt_info > span.num_date')[0].text.strip()
+            print(article_date)
+            # contents
             contents_lists = soup.select(
-                'div#harmonyContainer > section > p[dmcf-ptype="general"]')
+                'div#harmonyContainer > section > [dmcf-ptype="general"]')
+                    # 여러 문장으로 나눠서 온 content들을 하나의 문장으로 합친다.
+            contents = ''
+            for content in contents_lists:
+                contents += content.text.strip() + '\n'
+            print(contents)
+            # link
             link = soup.select(
                 'div.copyUrl > div.sns_copyurl > a.link_copyurl > span:nth-child(2)')[0].text.strip()
+            print(link)
             # 이미지가 없는 기사일 경우 오류처리
             try:
                 img = soup.select('figure.figure_frm.origin_fig > p.link_figure > img')[
                     0]['data-org-src']
             except IndexError as e:
                 img = 0
-        except IndexError:
+            if img:
+                print(soup.select('figure.figure_frm.origin_fig > p.link_figure > img')[0]['data-org-src'])
+        except IndexError as e:
             nth_news += 1
             del soup
             continue
 
-        print(category)
-        print(newspaper)
-        print(title)
-        print(article_date)
-        if img:
-            print(soup.select('figure.figure_frm.origin_fig > p.link_figure > img')[0]['data-org-src'])
-        print(link)
 
-        # 여러 문장으로 나눠서 온 content들을 하나의 문장으로 합친다.
-        contents = ''
-        for content in contents_lists:
-            contents += content.text.strip()
-        print(contents)
-
-        if img:
-            item_obj = {
-                'link': link,
-                'category': category,
-                'title': title,
-                'article_date': article_date,
-                'img': img,
-                'contents': contents,
-                'crawl_time': crawl_time,
-                'newspaper': newspaper
-            }
-        else:
-            item_obj = {
-                'link': link,
-                'category': category,
-                'title': title,
-                'article_date': article_date,
-                'img': None,
-                'contents': contents,
-                'crawl_time': crawl_time,
-                'newspaper': newspaper
-            }
+        item_obj = {
+            'link': link,
+            'category': category,
+            'title': title,
+            'article_date': article_date,
+            'img': img,
+            'contents': contents,
+            'crawl_time': crawl_time,
+            'newspaper': newspaper,
+            'headline': headline
+        }
 
         result.append(item_obj)
 
@@ -165,6 +177,9 @@ def crawl_data():
 
 
 def add_new_itmes(crawled_items):
+    # 새로운 기사를 저장하기 전에 기존의 데이터를 모두 삭제
+    delete_all()
+
     last_inserted_items = Article.objects.last()
     if last_inserted_items is None:
         last_inserted_link = ""
@@ -185,7 +200,8 @@ def add_new_itmes(crawled_items):
             img=item['img'],
             contents=item['contents'],
             crawl_time=item['crawl_time'],
-            newspaper=item['newspaper']
+            newspaper=item['newspaper'],
+            headline=item['headline']
         ).save()
         # print("new item added!")
 
@@ -193,4 +209,4 @@ def add_new_itmes(crawled_items):
 
 
 if __name__ == '__main__':
-    add_new_itmes(crawl_data())
+        add_new_itmes(crawl_data())
