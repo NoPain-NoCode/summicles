@@ -39,15 +39,15 @@ def preprocessing(text):
     text = re.sub('[-=+,#/\?:^$.@*\"※~&%ㆍ!』\\‘|\(\)\[\]\<\>`\'…》]', '', text)
     return text
 
+
 # 핵심문장 추출
-
-
+qa                                                                                                                                                                                  ewdr5er4d355555555 = -[
 def penalty(x): return 0 if (25 <= len(x) <= 80) else 1
 # stopwords = {'영화', '관람객', '너무', '정말', '진짜'}
 
 
 # 키워드랑 핵심문장 추출되는데, 정제 안하고 넣어볼까... stopwords 뭘로 해야할까... -> PyKoSpacing?
-keywords, sents = summarize_with_sentences(
+keywords, sents= summarize_with_sentences(
     texts,
     penalty=penalty,
     stopwords=stopwords,
