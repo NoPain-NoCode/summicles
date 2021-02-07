@@ -54,6 +54,17 @@ header .menu-group .swiper-container {
 /* FEATURE */
 .section--feature {
 }
+.section--feature .search-info {
+  display: block;
+  text-align: center;
+}
+.section--feature .search-info .searchinfo-wrap {
+  display: block;
+}
+.section--feature .search-info .article-time {
+  padding-left: 15px;
+}
+
 .section--feature li {
   width: 100%;
 }
@@ -92,7 +103,12 @@ header .menu-group .swiper-container {
 }
 
 /* 팝업 기사 */
+
 .popup .modal-content {
   max-width: 350px;
+  max-height: 80%;
   font-size: 13px;
+}
+.popup .modal-header .title {
+  font-size: 16px;
 }
