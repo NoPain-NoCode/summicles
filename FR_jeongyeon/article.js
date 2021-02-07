@@ -1,89 +1,32 @@
-const goMain = document.querySelector("#main");
-const goPolitics = document.querySelector("#politics");
-const goEconomic = document.querySelector("#economic");
-const goSociety = document.querySelector("#society");
-const goCulture = document.querySelector("#culture");
-const goForeign = document.querySelector("#foreign")
-const goDigital = document.querySelector("#digital");
-//카테고리 클릭 시 해당 카테고리 기사들로 이동. 
-//초기값은 main으로 설정. 
-let moveUrl = 'http://ysa8497.pythonanywhere.com/summicles/main/';
-const urlMain = 'http://ysa8497.pythonanywhere.com/summicles/main/';
-const urlPolitics = 'http://ysa8497.pythonanywhere.com/summicles/politics/';
-const urlEconomic = 'http://ysa8497.pythonanywhere.com/summicles/economic/';
-const urlSociety = 'http://ysa8497.pythonanywhere.com/summicles/society/';
-const urlCulture = 'http://ysa8497.pythonanywhere.com/summicles/culture/';
-const urlForeign = 'http://ysa8497.pythonanywhere.com/summicles/foreign/';
-const urlDigital = 'http://ysa8497.pythonanywhere.com/summicles/digital/';
-const urlSearch = 'http://ysa8497.pythonanywhere.com/summicles/main/?search=';
+// 기사를 가져오는 JS
+const clickMain = document.querySelector('#main');
+const clickPolitics= document.querySelector('#politics');
+const clickEconomic= document.querySelector('#economic');
+const clickSociety= document.querySelector('#society');
+const clickCulture= document.querySelector('#culture');
+const clickForeign= document.querySelector('#foreign');
+const clickDigital= document.querySelector('#digital');
 
-const inputSearch = document.querySelector('#search');
-const searchNum = document.querySelector('.search-number');
-const searchKeyword = document.querySelector('.search-keyword');
-const articleDateHere = document.querySelector('.article-date-here');
+const urlMain = 'http://ysa8497.pythonanywhere.com/summicles/main/';
+const urlPolitics = 'http://dylee.pythonanywhere.com/summicles/politics/';
+const urlEconomic = 'http://dylee.pythonanywhere.com/summicles/economic/';
+const urlSociety = 'http://dylee.pythonanywhere.com/summicles/society/';
+const urlCulture = 'http://dylee.pythonanywhere.com/summicles/culture/';
+const urlForeign = 'http://dylee.pythonanywhere.com/summicles/foreign/';
+const urlDigital = 'http://dylee.pythonanywhere.com/summicles/digital/';
+const urlSearch = 'http://ysa8497.pythonanywhere.com/summicles/main/?search=';
 
 const ex_article = document.querySelector('.ex--article');
 const popupList = document.querySelector(".popup-list");
-const popup = document.querySelectorAll('.popup');
 
-inputSearch.addEventListener('keydown',(e)=>{
-    if(e.keyCode === 13){
-        let searchValue = inputSearch.value;
-        moveUrl = urlSearch + searchValue;
-        searchKeyword.classList.remove('hide');
-        searchKeyword.innerHTML = `<p><strong>\" ${searchValue} \"</strong> 의 검색 결과 입니다.</p>`;
-        getArticle(moveUrl);
-        
+
+
+function getArticle () {
+    if (ex_article.hasChildNodes() && popupList.hasChildNodes()){
+        ex_article.removeChild();
+        popupList.removeChild();
     }
-})
-
-    goMain.addEventListener('click',()=>{
-        moveUrl = urlMain;
-        searchKeyword.classList.add('hide');
-        getArticle(moveUrl);
-    })
-    goPolitics.addEventListener('click',()=>{
-        moveUrl = urlPolitics;
-        searchKeyword.classList.add('hide');
-        getArticle(moveUrl);
-    })
-    goEconomic.addEventListener('click',()=>{
-        moveUrl = urlEconomic;
-        searchKeyword.classList.add('hide');
-        getArticle(moveUrl);
-    })
-    goSociety.addEventListener('click',()=>{
-        moveUrl = urlSociety;
-        searchKeyword.classList.add('hide');
-        getArticle(moveUrl);
-    })
-    goCulture.addEventListener('click',()=>{
-        moveUrl = urlCulture;
-        searchKeyword.classList.add('hide');
-        getArticle(moveUrl);
-    })
-    goForeign.addEventListener('click',()=>{
-        moveUrl = urlForeign;
-        searchKeyword.classList.add('hide');
-        getArticle(moveUrl);
-    })
-    goDigital.addEventListener('click',()=>{
-        moveUrl = urlDigital;
-        searchKeyword.classList.add('hide');
-        getArticle(moveUrl);
-    })
-    
-
-
-function getArticle(fetchUrl){
-        while(ex_article.firstChild){
-            ex_article.removeChild(ex_article.firstChild);
-        }
-        while(popupList.firstChild){
-            popupList.removeChild(popupList.firstChild);
-        }
-    
-    fetch(fetchUrl,{
+    fetch(urlMain,{
         method: 'GET',
         
     }).then(response => response.json())
@@ -94,7 +37,7 @@ function getArticle(fetchUrl){
             
             if(i%5 === 0){
                 ul = document.createElement('ul');
-                ul.setAttribute('class', 'clearfix');
+                // ul.setAttribute('class', 'article-bundle');
             }
             if(img===null){
                 ul.innerHTML += `
@@ -103,11 +46,12 @@ function getArticle(fetchUrl){
                         <div class="article-group article_here">
                             <a class="title title_here">${title}</a>
                             <p class="headline-here">${headline}</p>
+                            <p class="tag-here">${category}</p>
                             <div class="date-and-newspaper">
-                                <p class="tag-here">#${category}</p>
                                 <p class="date_here">${article_date}</p>
                                 <p>${newspaper}</p>
                             </div>
+                            
                         </div>
                     </li>
                 `;
@@ -123,8 +67,7 @@ function getArticle(fetchUrl){
                             <h3 class="title madal-title-here">${title}</h3>
                             <div class="original-wrap">
                                 <button type="button" onclick="location.href = '${link}'">기사원문</button>
-                                <p>${article_date}</p>
-                                <p>#${category}</p>
+                                <p>#태그#태그#태그#태그</p>
                             </div>
                         </div>
                     <div class="modal-body">
@@ -143,16 +86,13 @@ function getArticle(fetchUrl){
             else{
                 ul.innerHTML += `
                     <li>
-                        <img class="show-article img_here img-article" src="${img}" onerror="this.src='./img/null_article_img.png'">
+                        <img class="show-article img_here img-article" src="${img}">
                         <div class="article-group article_here">
                             <a class="title title_here">${title}</a>
                             <p class="headline-here">${headline}</p>
-                            
-                            <div class="date-and-newspaper">
-                                <p class="tag-here">#${category}</p>
-                                <p class="date_here">${article_date}</p>
-                                <p>${newspaper}</p>
-                            </div>
+                            <p class="tag-here">${category}</p>
+                            <p class="date_here">${article_date}</p>
+                            <p>${newspaper}</p>
                         </div>
                     </li>
                 `; 
@@ -166,16 +106,13 @@ function getArticle(fetchUrl){
                                 <button class="btn-close1 close-img"><i class="fas fa-times"></i></button>
                             </div>
                             <h3 class="title madal-title-here">${title}</h3>
-                            <div class="info-wrap">
-                                <div class="original-wrap">
-                                    <button type="button" onclick="location.href = '${link}'">기사원문</button>
-                                    <p>${article_date}</p>
-                                </div>
-                                <p>#${category}</p>
+                            <div class="original-wrap">
+                                <button type="button" onclick="location.href = '${link}'">기사원문</button>
+                                <p>#태그#태그#태그#태그</p>
                             </div>
                         </div>
                     <div class="modal-body">
-                        <img class="modal-img-here"  src="${img}" alt="pic" onerror="this.src='./img/null_article_img.png'">
+                        <img class="modal-img-here"  src="${img}" alt="pic">
                         <p class="modal-article-here">${contents}</p>
                     </div>
                     <div class="modal-footer clearfix">
@@ -189,9 +126,7 @@ function getArticle(fetchUrl){
             }
             
             ex_article.appendChild(ul);
-            searchNum.innerHTML = '총 ' + response.length + '개의 기사';
             
-            articleDateHere.innerHTML = response[0].article_date+' ~ '+response[response.length-1].article_date + ' 기준';
         }
 
     const popupLayer = document.querySelectorAll('.popup');
@@ -205,6 +140,7 @@ function getArticle(fetchUrl){
     
     })
 }
+
 
 function getPopup(popupLayer,openPopup,openPopuptitle,btnClose1,btnClose2){
     for(let i=0; i<=popupLayer.length; i++){
@@ -231,5 +167,31 @@ function closePopup(element){
     element.classList.add('hide');
 }
 
-getArticle(urlMain);
+getArticle();
+
+
+
+function changeTopic(){
+    clickPolitics.addEventListener('click',()=>{
+        ex_article.removeChild();
+        popupList.removeChild();
+    });
+    clickEconomic.addEventListener('click',()=>{
+        getEconomicArticle()
+    });
+    clickSociety.addEventListener('click',()=>{
+        getSocietyArticle()
+    });
+    clickCulture.addEventListener('click',()=>{
+        getCultureArticle()
+    });
+    clickForeign.addEventListener('click',()=>{
+        getForeignArticle()
+    });
+    clickDigital.addEventListener('click',()=>{
+        getDigitalArticle()
+    });
+}
+changeTopic();
+
 

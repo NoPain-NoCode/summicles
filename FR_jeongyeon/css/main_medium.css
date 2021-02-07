@@ -2,7 +2,7 @@
 /* 테블릿 사이즈 */
 /* INNER */
 .section .inner {
-  max-width: 800px;
+  max-width: 700px;
 }
 
 header .menu-group .swiper-container {
@@ -17,8 +17,15 @@ header .menu-group .swiper-container {
 }
 
 /* FEATURE */
+.section--feature .ex--article {
+  width: 400px;
+}
 .section--feature li {
-  width: 50%;
+  width: 100%;
+  margin: auto 0;
+}
+.section--feature li .show-article {
+  height: 250px;
 }
 
 /* FOOTER */
