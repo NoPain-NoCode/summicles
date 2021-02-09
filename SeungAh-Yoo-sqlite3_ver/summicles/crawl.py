@@ -1,5 +1,6 @@
 # selenium 임포트
 from selenium import webdriver
+import schedule
 import time
 from selenium.webdriver.common.by import By
 from selenium.webdriver.support.ui import WebDriverWait
@@ -203,10 +204,13 @@ def add_new_itmes(crawled_items):
             newspaper=item['newspaper'],
             headline=item['headline']
         ).save()
-        # print("new item added!")
+
+    print("new item added!")
 
     return items_to_insert_into_db
 
+schedule.every(6).hours.do(add_new_itmes, crawl_data())
 
-if __name__ == '__main__':
-        add_new_itmes(crawl_data())
+while True:
+    schedule.run_pending()
+    time.sleep(300)
