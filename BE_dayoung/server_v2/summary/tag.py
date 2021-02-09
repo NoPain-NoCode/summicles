@@ -30,24 +30,29 @@ except:
 # 텍스트 cleaning
 
 
-def preprocessing(text):
-    text = re.sub('\n', '', text)
-    text = re.sub('\xa0', '', text)
-    text = re.sub('https?://\S+|www\.\S+', '', text)
-    text = re.sub('([a-zA-Z])', '', text)
-    text = re.sub('[ㄱ-ㅎㅏ-ㅣ]+', '', text)
-    text = re.sub('[-=+,#/\?:^$.@*\"※~&%ㆍ!』\\‘|\(\)\[\]\<\>`\'…》]', '', text)
-    return text
+def preprocessing(texts):
+    text_li = []
+    for text in texts:
+        text = re.sub('\n', '', text)
+        text = re.sub('\xa0', '', text)
+        text = re.sub('https?://\S+|www\.\S+', '', text)
+        text = re.sub('([a-zA-Z])', '', text)
+        text = re.sub('[ㄱ-ㅎㅏ-ㅣ]+', '', text)
+        text = re.sub(
+            '[-=+,#/\?:^$.@*\"※~&%ㆍ!』\\‘|\(\)\[\]\<\>`\'…》]', '', text)
+        text_li.append(text)
+    return text_li
 
 
-# 핵심문장 추출
-qa                                                                                                                                                                                  ewdr5er4d355555555 = -[
+# 핵심문장 추출                                                                                                                                                                                 ewdr5er4d355555555 = -[
 def penalty(x): return 0 if (25 <= len(x) <= 80) else 1
 # stopwords = {'영화', '관람객', '너무', '정말', '진짜'}
 
 
+texts = preprocessing(data[:, 'contents'])
+
 # 키워드랑 핵심문장 추출되는데, 정제 안하고 넣어볼까... stopwords 뭘로 해야할까... -> PyKoSpacing?
-keywords, sents= summarize_with_sentences(
+keywords, sents = summarize_with_sentences(
     texts,
     penalty=penalty,
     stopwords=stopwords,

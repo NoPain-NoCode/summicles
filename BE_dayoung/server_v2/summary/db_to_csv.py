@@ -1,6 +1,7 @@
 import pymysql
 import csv
 import pandas as pd
+# django.orm 이거 써보기
 
 # mysql과 연동
 conn = pymysql.connect(
