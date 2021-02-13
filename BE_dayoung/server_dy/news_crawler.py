@@ -1,6 +1,6 @@
-# selenium 임포
-import django
+# selenium 임포트
 from selenium import webdriver
+import schedule
 import time
 from selenium.webdriver.common.by import By
 from selenium.webdriver.support.ui import WebDriverWait
@@ -9,29 +9,28 @@ from selenium.webdriver.chrome.options import Options
 from selenium.common.exceptions import TimeoutException
 from selenium.webdriver.common.keys import Keys
 from bs4 import BeautifulSoup
-
+# summary 불러오기
+from summary import make_tag
 # 이미지 바이트 처리
 from io import BytesIO
 import urllib.request as req
 import datetime
 # 장고 연결
 import os
-
 os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'server_dy.settings')
+import django
 django.setup()
-from article.models import Article
 # django.setup() 이후 import해 주어야 한다.
+from article.models import Article
 
 # DB에 있는 모든 내용 삭제
-
-
 def delete_all():
     queryset = Article.objects.all()
     queryset.delete()
 
 
 def crawl_data():
-
+    
     result = []
 
     now = datetime.datetime.now()
@@ -41,7 +40,7 @@ def crawl_data():
     chrome_options.add_argument("--headless")  # 실행 했을 때 브라우저가 실행되지 않는다.
 
     # webdriver 설정(Chrome, Firefox 등) - Headless 모드
-    browser = webdriver.Chrome('D:/chromedriver.exe', options=chrome_options)
+    browser = webdriver.Chrome('D:\chromedriver.exe', options=chrome_options)
 
     # webdriver 설정(Chrome, Firefox 등) - 일반 모드
     # browser = webdriver.Chrome('D:/webdriver/chrome/chromedriver.exe')
@@ -74,17 +73,18 @@ def crawl_data():
         contents = None,
         crawl_time = None,
         newspaper = None,
+        headline = None
 
         browser.implicitly_wait(10)
 
         # headline 저장
         soup = BeautifulSoup(browser.page_source, 'html.parser')
+        headline = soup.select('#mArticle > div.rank_news > ul.list_news2 > li:nth-of-type({}) > div.cont_thumb > div > span'.format(nth_news))[0].text.strip()
         del soup
 
         # 페이지 이동 클릭
         try:
-            btn = browser.find_element_by_css_selector(
-                '#mArticle > div.rank_news > ul.list_news2 > li:nth-of-type({}) > div.cont_thumb > strong > a'.format(nth_news))
+            btn = browser.find_element_by_css_selector('#mArticle > div.rank_news > ul.list_news2 > li:nth-of-type({}) > div.cont_thumb > strong > a'.format(nth_news))
             browser.execute_script('arguments[0].click();', btn)
         except TimeoutException:
             nth_news += 1
@@ -141,6 +141,9 @@ def crawl_data():
             del soup
             continue
 
+        tag = make_tag(contents)
+        print(tag)
+        
         item_obj = {
             'link': link,
             'category': category,
@@ -150,6 +153,8 @@ def crawl_data():
             'contents': contents,
             'crawl_time': crawl_time,
             'newspaper': newspaper,
+            'headline': headline,
+            'tag' : tag
         }
 
         result.append(item_obj)
@@ -202,12 +207,16 @@ def add_new_itmes(crawled_items):
             contents=item['contents'],
             crawl_time=item['crawl_time'],
             newspaper=item['newspaper'],
+            headline=item['headline'],
+            tag = item['tag']
         ).save()
-        # print("new item added!")
+
+    print("new item added!")
 
     return items_to_insert_into_db
 
+schedule.every(6).hours.do(add_new_itmes, crawl_data())
 
-if __name__ == '__main__':
-
-    add_new_itmes(crawl_data())
+while True:
+    schedule.run_pending()
+    time.sleep(300)

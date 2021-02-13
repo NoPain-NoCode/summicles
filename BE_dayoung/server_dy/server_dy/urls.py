@@ -16,6 +16,15 @@ Including another URLconf
 from django.contrib import admin
 from django.urls import path
 
+from article.views import MainAPI, PoliticsAPI, EconomicAPI, SocietyAPI, CultureAPI, ForeignAPI, DigitalAPI
+
 urlpatterns = [
     path('admin/', admin.site.urls),
+    path('api/', MainAPI.as_view()),
+    path('api/politics/', PoliticsAPI.as_view()),
+    path('api/economic/', EconomicAPI.as_view()),
+    path('api/society/', SocietyAPI.as_view()),
+    path('api/culture/', CultureAPI.as_view()),
+    path('api/foreign/', ForeignAPI.as_view()),
+    path('api/digital/', DigitalAPI.as_view()),
 ]

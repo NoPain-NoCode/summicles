@@ -21,8 +21,7 @@ class Migration(migrations.Migration):
                 ('contents', models.TextField()),
                 ('crawl_time', models.CharField(blank=True, max_length=128, null=True)),
                 ('newspaper', models.CharField(blank=True, max_length=64, null=True)),
-                ('summary', models.TextField()),
-                ('tag', models.CharField(db_column='Tag', max_length=128)),
+                ('tag', models.CharField(max_length=128, blank=True, null=True)),
             ],
             options={
                 'verbose_name': '기사 최종',

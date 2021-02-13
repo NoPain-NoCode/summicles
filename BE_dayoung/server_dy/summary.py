@@ -22,7 +22,7 @@ from article.models import Article, ArticleFinal
 
 data = Article.objects.all().values('contents')
 
-print(data[6])
+# print(data[6])
 
 # 전처리
 # def preprocessing(texts):
@@ -79,73 +79,71 @@ def preprocessing(text):
 
 def make_tag(data):
     stopwords = {'기자'}
-    tag = []
-    for d in data:
-        #전처리
-        text = preprocessing(d)
-        #문장별로 나눠줌
-        texts = text.split('.')
-        sentence = ''
-        # 학습
-        try:
-            keywords, sents = summarize_with_sentences(
-                texts,
-                stopwords=stopwords,
-                num_keywords=5,
-                num_keysents=3
-            )
-            for word, r in sorted(keywords.items(), key=lambda x:x[1], reverse=True)[:5]:
-                # print('%8s:\t%.4f' % (word, r))
-                # print('#%s' % word)
-                sentence += '#'+word+' '
-        except ValueError as v:
-            # print('#')
-            sentence = '# '
-        # tag에 추가
-        tag.append(sentence)
+
+    #전처리
+    text = preprocessing(data)
+    #문장별로 나눠줌
+    texts = text.split('.')
+    tag = ''
+    # 학습
+    try:
+        keywords, sents = summarize_with_sentences(
+            texts,
+            stopwords=stopwords,
+            num_keywords=5,
+            num_keysents=3
+        )
+        for word, r in sorted(keywords.items(), key=lambda x:x[1], reverse=True)[:5]:
+            # print('%8s:\t%.4f' % (word, r))
+            # print('#%s' % word)
+            tag += '#'+word+' '
+    except ValueError as v:
+        # print('#')
+        tag = '# '
+    # tag에 추가
 
     return tag
 
-print(tag[2])
+# print(tag[2])
 
 
-# DB 연결아직 안됨
-def delete_all_Final():
-    queryset = ArticleFinal.objects.all()
-    queryset.delete()
+# # DB 연결아직 안됨
+# def delete_all_Final():
+#     queryset = ArticleFinal.objects.all()
+#     queryset.delete()
 
-def add_new_itmes_Final(trained_items):
-    # 새로운 기사를 저장하기 전에 기존의 데이터를 모두 삭제
-    delete_all_Final()
+# def add_new_itmes_Final(trained_items):
+#     # 새로운 기사를 저장하기 전에 기존의 데이터를 모두 삭제
+#     delete_all_Final()
 
-    last_inserted_items = ArticleFinal.objects.last()
-    if last_inserted_items is None:
-        last_inserted_link = ""
-    else:
-        last_inserted_link = getattr(last_inserted_items, 'link')
-    items_to_insert_into_db = []
-    for item in trained_items:
-        if item['link'] == last_inserted_link:
-            break
-        items_to_insert_into_db.append(item)
-    items_to_insert_into_db.reverse()
-    i = 0
-    for item in items_to_insert_into_db:
-        ArticleFinal(
-            link=item['link'],
-            category=item['category'],
-            title=item['title'],
-            article_date=item['article_date'],
-            img=item['img'],
-            contents=item['contents'],
-            crawl_time=item['crawl_time'],
-            newspaper=item['newspaper'],
-            tag = tag[i],
-        ).save()
-        i += 1
-        # print("new item added!")
+#     last_inserted_items = ArticleFinal.objects.last()
+#     if last_inserted_items is None:
+#         last_inserted_link = ""
+#     else:
+#         last_inserted_link = getattr(last_inserted_items, 'link')
+#     items_to_insert_into_db = []
+#     for item in trained_items:
+#         if item['link'] == last_inserted_link:
+#             break
+#         items_to_insert_into_db.append(item)
+#     items_to_insert_into_db.reverse()
+#     i = 0
+#     for item in items_to_insert_into_db:
+#         ArticleFinal(
+#             link=item['link'],
+#             category=item['category'],
+#             title=item['title'],
+#             article_date=item['article_date'],
+#             img=item['img'],
+#             contents=item['contents'],
+#             crawl_time=item['crawl_time'],
+#             newspaper=item['newspaper'],
+#             tag = tag[i],
+#         ).save()
+#         i += 1
+#         # print("new item added!")
 
-    return items_to_insert_into_db
+#     return items_to_insert_into_db
 
-trained_items = Article.objects.all()
-add_new_itmes_Final(trained_items)
+# trained_items = Article.objects.all()
+# add_new_itmes_Final(trained_items)
