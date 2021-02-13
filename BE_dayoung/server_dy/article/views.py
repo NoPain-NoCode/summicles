@@ -28,6 +28,7 @@ class FrontAppView(View):
 
         except:
             return HttpResponse(status=501,)
+
 class MainAPI(generics.GenericAPIView, mixins.ListModelMixin):
     queryset = Article.objects.all()
     filter_backends = [SearchFilter]
