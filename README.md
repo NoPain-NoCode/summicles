@@ -22,7 +22,7 @@
 |OS|Windows10| |
 |개발환경(IDE)|visual studio code, jupyter notebook| |
 |Framework|Django|백엔드 개발|
-|DB|MySQL| |
+|DB|sqlite3| |
 |개발언어|python3.7|백엔드 개발, 크롤링, 기사 요약 학습|
 ### Media(Grid)Options
 |종류|디바이스|단위(px)|
