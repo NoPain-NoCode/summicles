@@ -7,15 +7,15 @@ const goForeign = document.querySelector("#foreign")
 const goDigital = document.querySelector("#digital");
 //카테고리 클릭 시 해당 카테고리 기사들로 이동. 
 //초기값은 main으로 설정. 
-let moveUrl = 'http://ysa8497.pythonanywhere.com/summicles/main/';
-const urlMain = 'http://ysa8497.pythonanywhere.com/summicles/main/';
-const urlPolitics = 'http://ysa8497.pythonanywhere.com/summicles/politics/';
-const urlEconomic = 'http://ysa8497.pythonanywhere.com/summicles/economic/';
-const urlSociety = 'http://ysa8497.pythonanywhere.com/summicles/society/';
-const urlCulture = 'http://ysa8497.pythonanywhere.com/summicles/culture/';
-const urlForeign = 'http://ysa8497.pythonanywhere.com/summicles/foreign/';
-const urlDigital = 'http://ysa8497.pythonanywhere.com/summicles/digital/';
-const urlSearch = 'http://ysa8497.pythonanywhere.com/summicles/main/?search=';
+let moveUrl = 'http://ysa8497.pythonanywhere.com/api/';
+const urlMain = 'http://ysa8497.pythonanywhere.com/api/';
+const urlPolitics = 'http://ysa8497.pythonanywhere.com/api/politics/';
+const urlEconomic = 'http://ysa8497.pythonanywhere.com/api/economic/';
+const urlSociety = 'http://ysa8497.pythonanywhere.com/api/society/';
+const urlCulture = 'http://ysa8497.pythonanywhere.com/api/culture/';
+const urlForeign = 'http://ysa8497.pythonanywhere.com/api/foreign/';
+const urlDigital = 'http://ysa8497.pythonanywhere.com/api/digital/';
+const urlSearch = 'http://ysa8497.pythonanywhere.com/api/?search=';
 
 const inputSearch = document.querySelector('#search');
 const searchNum = document.querySelector('.search-number');
@@ -26,12 +26,38 @@ const ex_article = document.querySelector('.ex--article');
 const popupList = document.querySelector(".popup-list");
 const popup = document.querySelectorAll('.popup');
 
+let searchNumBoolean = true;
+
+const goToMain = document.querySelector('.logo');
+
+goToMain.addEventListener('click', ()=>{
+    moveUrl = urlMain;
+    getArticle(moveUrl);
+    searchNumBoolean = true;
+})
+
+
 inputSearch.addEventListener('keydown',(e)=>{
     if(e.keyCode === 13){
         let searchValue = inputSearch.value;
         moveUrl = urlSearch + searchValue;
+        fetch(moveUrl,{
+            method: 'GET',
+        }).then(response => response.json())
+        .then(response =>{
+            if(response.length === 0){
+                searchKeyword.innerHTML = `<p><strong>\" ${searchValue} \"</strong> 의 검색 결과가 없습니다.</p>`;
+                searchNumBoolean = false;
+            }
+            else{
+                searchKeyword.innerHTML = `<p><strong>\" ${searchValue} \"</strong> 의 검색 결과 입니다.</p>`;
+                searchNumBoolean = true;
+                
+            }
+        })
+        
         searchKeyword.classList.remove('hide');
-        searchKeyword.innerHTML = `<p><strong>\" ${searchValue} \"</strong> 의 검색 결과 입니다.</p>`;
+        
         getArticle(moveUrl);
         
     }
@@ -88,13 +114,26 @@ function getArticle(fetchUrl){
         
     }).then(response => response.json())
     .then(response =>{
-        let ul
+        let ul;
+        let totalP;
+        let arrayArticle = new Array();
         for(let i=0; i<response.length; i++){
-            const {title, img, article_date, newspaper,contents,link,category,headline} = response[i];
+            const {title, img, article_date, newspaper,contents,link,category,summary,tag} = response[i];
             
+            totalP = document.createElement('p');
+
+            let brArticle = contents.split('\n');
+            for(let value of brArticle){
+                let p = document.createElement('p');
+                p.setAttribute('class', 'modal-contents')
+                p.innerHTML= value;
+                totalP.appendChild(p);
+            }
+            arrayArticle.push(totalP);
+
             if(i%5 === 0){
                 ul = document.createElement('ul');
-                ul.setAttribute('class', 'clearfix');
+                ul.setAttribute('class', 'clearfix ul-here');
             }
             if(img===null){
                 ul.innerHTML += `
@@ -102,9 +141,9 @@ function getArticle(fetchUrl){
                         <img class="show-article img_here img-article" src="./img/null_article_img.png">
                         <div class="article-group article_here">
                             <a class="title title_here">${title}</a>
-                            <p class="headline-here">${headline}</p>
+                            <p class="headline-here">${summary}</p>
                             <div class="date-and-newspaper">
-                                <p class="tag-here">#${category}</p>
+                                <p class="tag-here">#${category} ${tag}</p>
                                 <p class="date_here">${article_date}</p>
                                 <p>${newspaper}</p>
                             </div>
@@ -124,7 +163,7 @@ function getArticle(fetchUrl){
                             <div class="original-wrap">
                                 <button type="button" onclick="location.href = '${link}'">기사원문</button>
                                 <p>${article_date}</p>
-                                <p>#${category}</p>
+                                <p>#${category} ${tag}</p>
                             </div>
                         </div>
                     <div class="modal-body">
@@ -146,10 +185,10 @@ function getArticle(fetchUrl){
                         <img class="show-article img_here img-article" src="${img}" onerror="this.src='./img/null_article_img.png'">
                         <div class="article-group article_here">
                             <a class="title title_here">${title}</a>
-                            <p class="headline-here">${headline}</p>
+                            <p class="headline-here">${summary}</p>
                             
                             <div class="date-and-newspaper">
-                                <p class="tag-here">#${category}</p>
+                                <p class="tag-here">#${category} ${tag}</p>
                                 <p class="date_here">${article_date}</p>
                                 <p>${newspaper}</p>
                             </div>
@@ -171,12 +210,12 @@ function getArticle(fetchUrl){
                                     <button type="button" onclick="location.href = '${link}'">기사원문</button>
                                     <p>${article_date}</p>
                                 </div>
-                                <p>#${category}</p>
+                                <p>#${category} ${tag}</p>
                             </div>
                         </div>
                     <div class="modal-body">
                         <img class="modal-img-here"  src="${img}" alt="pic" onerror="this.src='./img/null_article_img.png'">
-                        <p class="modal-article-here">${contents}</p>
+                        <p class="modal-article-here"></p> 
                     </div>
                     <div class="modal-footer clearfix">
                         <button class="btn-close2 float--right">닫기</button>
@@ -187,12 +226,41 @@ function getArticle(fetchUrl){
                 </div>
                 `;
             }
-            
+            if(searchNumBoolean){
+                searchNum.innerText = '총 ' + response.length + '개의 기사';
+            }
+            else{
+                searchNum.innerText =  '총 0개의 기사';
+            }
+
             ex_article.appendChild(ul);
-            searchNum.innerHTML = '총 ' + response.length + '개의 기사';
             
             articleDateHere.innerHTML = response[0].article_date+' ~ '+response[response.length-1].article_date + ' 기준';
+        
         }
+
+        let findModalArticleHere = document.querySelectorAll('.modal-article-here');
+        for(let value of findModalArticleHere){
+            value.innerHTML = `${arrayArticle.shift().innerHTML}`
+        }
+    
+
+
+    const sameHeights = document.querySelectorAll('.article-group');
+    let heights = [];
+
+    for(let i=0; i<sameHeights.length; i++){
+        heights.push(parseInt(window.getComputedStyle(sameHeights[i]).height.replace('px','')));
+    }
+    
+    let maxHeight = Math.max.apply(null,heights);
+    
+    for(let i=0; i<sameHeights.length; i++){
+        sameHeights[i].style.height = maxHeight + 'px';
+    }
+    
+    
+
 
     const popupLayer = document.querySelectorAll('.popup');
     const openPopup = document.querySelectorAll('.img-article');
@@ -230,6 +298,8 @@ function onElements(element){
 function closePopup(element){
     element.classList.add('hide');
 }
+
+
 
 getArticle(urlMain);
 

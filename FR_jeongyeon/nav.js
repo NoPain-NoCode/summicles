@@ -8,6 +8,8 @@ const culture = document.querySelector('#topic-menu>li:nth-child(5)');
 const international = document.querySelector('#topic-menu>li:nth-child(6)');
 const science = document.querySelector('#topic-menu>li:nth-child(7)');
 //메뉴 요소를 리스트에 담음. 
+const goToNewsHome = document.querySelector('.logo');
+
 
 const menuSelectList = [mainMenu, politics, economi, society, culture, international, science];
 //각 메뉴 클릭 시 addOntoMenu 함수 호출
@@ -21,10 +23,17 @@ function addOntoMenu(menu){
     menu.classList.add('on');
     for(let i=0; i<menuSelectList.length; i++){
         if(menuSelectList[i]===menu) continue;
+        searchNumBoolean = true
         menuSelectList[i].classList.remove('on');
     }
 }
-
+goToNewsHome.addEventListener('click', ()=>{
+    mainMenu.classList.add('on');
+    for(let i=1; i<menuSelectList.length; i++){
+        searchNumBoolean = true
+        menuSelectList[i].classList.remove('on');
+    }
+ })
 
 
 
