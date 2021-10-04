@@ -1,0 +1,7 @@
+*.log
+
+*.exe
+
+*.whl
+
+db.sqlite3
