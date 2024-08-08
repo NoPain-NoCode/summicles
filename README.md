@@ -4,7 +4,7 @@
 |팀원|역할|
 |---|---|
 |[박정연](https://github.com/jeongyeon-park)|팀장,프론트엔드 개발|
-|[유승아](https://github.com/SeungAh-Yoo99)|백엔드 개발, 핵심어(태그) 추출 기능 개발|
+|[유승아](https://github.com/SeungAh-Yoo99)|백엔드 개발, 기사 크롤링|
 |[이다영](https://github.com/youngDaLee)|백엔드 개발, 핵심어(태그) 추출 기능 개발|
 |[정주영](https://github.com/jyj544)|프론트엔드 개발|
 
